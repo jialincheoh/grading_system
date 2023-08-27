@@ -1,0 +1,66 @@
+<p id="notice"><%= notice %></p>
+
+<h2>Listing Grades</h2>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th colspan="3">Project</th>
+      <th colspan="3">Student</th>
+      <th colspan="3">Grader Name</th>
+      <th colspan="3">Grader Email</th>
+      <th colspan="3">User Experience Score</th>
+      <th colspan="3">Info Visualization Score</th>
+      <th colspan="3">Novelty Score</th>
+      <th colspan="3">Technical Score</th>
+      <th colspan="3">Phase</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @grades.each do |grade| %>
+      <tr>
+        <td colspan="3"><%= grade.project.name %></td>
+        <td colspan="3"><%= grade.project.student.name %></td>
+        <td colspan="3"><%= grade.grader.try(:name) %></td>
+        <td colspan="3"><%= grade.grader.try(:email) %></td>
+        <% if grade.technical_grade? %>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"><%= number_with_precision(grade.total_technical_score, :precision => 2) %></td>
+        <% end %>
+        <% if grade.usability_grade? %>
+            <td colspan="3"><%= number_with_precision(grade.total_user_experience_score, :precision => 2) %></td>
+            <td colspan="3"><%= number_with_precision(grade.total_info_visualization_score, :precision => 2) %></td>
+            <% if grade.project.bogota_ironhack? || grade.project.purdue_ironhack? %>
+                <td colspan="3"><%= number_with_precision(grade.design_relevance_score, :precision => 2) %></td>
+            <% else %>
+                <td colspan="3"><%= number_with_precision(grade.total_novelty_score, :precision => 2) %></td>
+            <% end %>
+            <td colspan="3"> - - - </td>
+        <% end %>
+
+        <td colspan="3"><%= grade.phase %></td>
+        <td colspan="3"><%= link_to 'Show Grade', project_grade_path(@project, grade), class: 'btn btn-small btn-warning' %></td>
+        <% if Grade.where(project_id: @project.id, grader_id: current_grader.id).include? grade %>
+            <td colspan="3"><%= link_to 'Edit Grade', edit_project_grade_path(@project, grade), class: 'btn btn-small btn-warning' %></td>
+            <td colspan="3"><%= link_to 'Destroy Grade', [@project, grade], method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-small btn-danger', style: "color:white" %></td>
+        <% end %>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if current_grader.technical_expert? && (@project.graders.include? current_grader) %>
+    <%= link_to 'Start Grading', new_project_grade_path(@project), class: 'btn btn-warning' %>
+<% end %>
+
+<% if @project.web_url.present? && current_grader.technical_expert? && (@project.graders.include? current_grader) %>
+    <%= link_to 'Create Novelty Fields for User Experience Grader', project_novelty_fields_path(@project), class: 'btn btn-warning' %>
+    <%= link_to 'See Existing Novelty Fields for User Experience Grader', project_list_novelty_fields_path(@project), class: 'btn btn-warning' %>
+<% end %>
+
+<%= link_to 'Back', project_path(@project), class: 'btn btn-warning' %>

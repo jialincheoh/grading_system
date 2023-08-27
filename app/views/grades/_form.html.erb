@@ -1,0 +1,152 @@
+<%= form_for([@project, @grade]) do |f| %>
+  <% if @grade.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@grade.errors.count, "error") %> prohibited this grade from being saved:</h2>
+
+      <ul>
+      <% @grade.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.hidden_field :project_id %>
+  </div>
+  <div class="field">
+    <%= f.hidden_field :grader_id, value: current_grader.id %>
+  </div>
+
+    <% if current_grader.technical_expert? %>
+        <h4>Please read the technical grading instructions <%= link_to 'here', technical_grading_instructions_path, style: "color:#ff0000" %></h4>
+        <%= f.hidden_field :technical, value: true %>
+        <% if @project.web_url.present? && current_grader.technical_expert? && (@project.graders.include? current_grader) %>
+            <p style="color:#ff0000"><strong> Please remember to create Novelty Fields for the UX Grader after submitting the technical grades.</strong></p>
+            <p style="color:#ff0000"><strong> Note 'No Dataset' if there is no feature in the application</strong></p>
+        <% end %>
+
+        <div class="field">
+          <b> Yes = 1, No = 0 </b>
+        </div>
+
+        <div class="form-group">
+          <% if @project.gold_ironhack? || @project.black_ironhack? %>
+              <%= render 'technical_fields', f: f %>
+          <% elsif @project.bogota_ironhack? || @project.platzi_ironhack? %>
+              <%= render 'bogota_hack_tech_fields', f: f %>
+          <% elsif @project.purdue_ironhack? %>
+              <%= render 'purdue_hack_tech_fields', f: f %>
+          <% end %>
+        </div>
+
+        <div class="form-group">
+          <%= render 'error_fields', f: f %>
+        </div>
+
+        <% unless params[:action] == 'edit' %>
+            <div class="field" class="form-group">
+              <%= f.label :phase %><br>
+              <% if @project.bogota_ironhack? %>
+                  <%= f.select :phase, ["1st Phase", "2nd Phase", "3rd Phase", "4th Phase", "5th Phase"] %>
+              <% else %>
+                  <%= f.select :phase, ["1st Phase", "2nd Phase", "3rd Phase", "Final Phase"] %>
+              <% end %>
+            </div>
+        <% end %>
+
+        <div class="actions">
+          <%= f.submit class: "btn btn-primary" %>
+        </div>
+    <% end %>
+
+    <% if current_grader.user_interface_expert? && @grade.novelty_fields_present? %>
+        <h4>Please read the UX grading instructions <%= link_to 'here', usability_grading_instructions_path(project_id: @project.id), style: "color:#ff0000" %></h4>
+        <%= f.hidden_field :usability, value: true %>
+        <% if @project.gold_ironhack? %>
+            <%= render 'gold_iron_hack_ux_fields', f: f %>
+        <% elsif @project.black_ironhack? %>
+            <%= render 'black_iron_hack_ux_fields', f: f %>
+        <% elsif @project.bogota_ironhack? %>
+            <%= render 'bogota_iron_hack_ux_fields', f: f %>
+        <% elsif @project.purdue_ironhack? %>
+            <%= render 'purdue_iron_hack_ux_fields', f: f %>
+        <% elsif @project.platzi_ironhack? %>
+            <%= render 'platzi_iron_hack_ux_fields', f: f %>
+        <% end %>
+        <h3> Novelty Scores </h3>
+        <p>
+          <b>
+            Does your App include features generated from open datasets?
+            How relevant is the data for the App and how well is the data designed and implemented?
+          </b>
+        </p>
+        <% if @grade.novelty_1_text.present? %>
+            <div class="field" class="form-group">
+              <p><strong><%= @grade.novelty_1_text %></strong></p>
+              <br>
+              <%= f.label "", "If the dataset is required by the brief is it visible: 0-Yes or 3-No. If the dataset is not required by the brief: How relevant is the dataset to user's goal? (0-Extremly relevant (i.e., cannot do without); 1 = Relevant (i.e., helpful or adds value); 2 = Applicable (i.e., ok, but does not add much value); 3 = Irrelevant (i.e., can be excluded): " %>
+              <%= f.select :novelty_1_score, [nil, 0, 1, 2, 3] %>
+              <%= f.label "", "Quality of Execution: How the data is visualised and funcionalized in the mash up? (0-no design or functional issues; 1-cosmetic design issue, 2-functional issue (e.g., design hinders cognition or data not functional enough to support user goals); 3-has to be fixed for launch (e.g., broken urls, misleading design): " %>
+              <%= f.select :novelty_1_design_score, [nil, 0, 1, 2, 3] %>
+            </div>
+        <% end %>
+
+        <% if @grade.novelty_2_text.present? %>
+            <div class="field" class="form-group">
+              <p><strong><%= @grade.novelty_2_text %></strong></p>
+              <br>
+              <%= f.label "", "If the dataset is required by the brief is it visible: 0-Yes or 3-No. If the dataset is not required by the brief: How relevant is the dataset to user's goal? (0-Extremly relevant (i.e., cannot do without); 1 = Relevant (i.e., helpful or adds value); 2 = Applicable (i.e., ok, but does not add much value); 3 = Irrelevant (i.e., can be excluded): " %>
+              <%= f.select :novelty_2_score, [nil, 0, 1, 2, 3] %>
+              <%= f.label "", "Quality of Execution: How the data is visualised and funcionalized in the mash up? (0-no design or functional issues; 1-cosmetic design issue, 2-functional issue (e.g., design hinders cognition or data not functional enough to support user goals); 3-has to be fixed for launch (e.g., broken urls, misleading design): " %>
+              <%= f.select :novelty_2_design_score, [nil, 0, 1, 2, 3] %>
+            </div>
+        <% end %>
+
+        <% if @grade.novelty_3_text.present? %>
+            <div class="field" class="form-group">
+              <p><strong><%= @grade.novelty_3_text %></strong></p>
+              <br>
+              <%= f.label "", "If the dataset is required by the brief is it visible: 0-Yes or 3-No. If the dataset is not required by the brief: How relevant is the dataset to user's goal? (0-Extremly relevant (i.e., cannot do without); 1 = Relevant (i.e., helpful or adds value); 2 = Applicable (i.e., ok, but does not add much value); 3 = Irrelevant (i.e., can be excluded): " %>
+              <%= f.select :novelty_3_score, [nil, 0, 1, 2, 3] %>
+              <%= f.label "", "Quality of Execution: How the data is visualised and funcionalized in the mash up? (0-no design or functional issues; 1-cosmetic design issue, 2-functional issue (e.g., design hinders cognition or data not functional enough to support user goals); 3-has to be fixed for launch (e.g., broken urls, misleading design): " %>
+              <%= f.select :novelty_3_design_score, [nil, 0, 1, 2, 3] %>
+            </div>
+        <% end %>
+
+        <% if @grade.novelty_4_text.present? %>
+            <div class="field" class="form-group">
+              <p><strong><%= @grade.novelty_4_text %></strong></p>
+              <br>
+              <%= f.label "", "If the dataset is required by the brief is it visible: 0-Yes or 3-No. If the dataset is not required by the brief: How relevant is the dataset to user's goal? (0-Extremly relevant (i.e., cannot do without); 1 = Relevant (i.e., helpful or adds value); 2 = Applicable (i.e., ok, but does not add much value); 3 = Irrelevant (i.e., can be excluded): " %>
+              <%= f.select :novelty_4_score, [nil, 0, 1, 2, 3] %>
+              <%= f.label "", "Quality of Execution: How the data is visualised and funcionalized in the mash up? (0-no design or functional issues; 1-cosmetic design issue, 2-functional issue (e.g., design hinders cognition or data not functional enough to support user goals); 3-has to be fixed for launch (e.g., broken urls, misleading design): " %>
+              <%= f.select :novelty_4_design_score, [nil, 0, 1, 2, 3] %>
+            </div>
+        <% end %>
+
+        <% if @grade.novelty_5_text.present? %>
+            <div class="field" class="form-group">
+              <p><strong><%= @grade.novelty_5_text %></strong></p>
+              <br>
+              <%= f.label "", "If the dataset is required by the brief is it visible: 0-Yes or 3-No. If the dataset is not required by the brief: How relevant is the dataset to user's goal? (0-Extremly relevant (i.e., cannot do without); 1 = Relevant (i.e., helpful or adds value); 2 = Applicable (i.e., ok, but does not add much value); 3 = Irrelevant (i.e., can be excluded): " %>
+              <%= f.select :novelty_5_score, [nil, 0, 1, 2, 3] %>
+              <%= f.label "", "Quality of Execution: How the data is visualised and funcionalized in the mash up? (0-no design or functional issues; 1-cosmetic design issue, 2-functional issue (e.g., design hinders cognition or data not functional enough to support user goals); 3-has to be fixed for launch (e.g., broken urls, misleading design): " %>
+              <%= f.select :novelty_5_design_score, [nil, 0, 1, 2, 3] %>
+            </div>
+        <% end %>
+
+        <% if params[:action] == 'new' %>
+            <div class="field" class="form-group">
+              <%= f.label :phase %><br>
+              <%= f.select :phase, ["1st Phase", "2nd Phase", "3rd Phase", "Final Phase"] %>
+            </div>
+        <% end %>
+
+        <div class="actions">
+          <%= f.submit class: "btn btn-primary" %>
+        </div>
+    <% elsif current_grader.user_interface_expert? %>
+        <h5> Not available to grade yet! </h5>
+    <% end %>
+<% end %>

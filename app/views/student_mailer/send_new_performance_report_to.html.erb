@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+      table, td, th {
+          border: 1px solid black;
+      }
+
+      table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+
+      td {
+          height: 50px;
+          vertical-align: bottom;
+      }
+
+      p {
+        color: black;
+        font-family: arial,sans-serif;
+        font-size: 20px;
+      }
+
+  </style>
+</head>
+
+<body>
+<p>Hello IronHacker! </p>
+<p>Our expert judges have evaluated your application and provided feedback. Please have a look at your scores below in the table. Keep pushing and developing your app.</p>
+
+<h3> Feedback Table </h3>
+<table style="font-size: 16px; font-family: Arial, sans-serif; color: #222222;" >
+  <thead>
+  <tr>
+    <th colspan="3">Github Name</th>
+    <th colspan="3"><%= @student.github %></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% if ['Bogota-Hack-1-2017', 'Bogota-Hack-3-2017'].include? @project.hack.name %>
+      <tr>
+        <td colspan="3" style="text-align:center;vertical-align:middle;">General Feedback</td>
+        <td colspan="3">
+          <p>
+            Thanks for submitting your app! We really enjoyed evaluating your application.
+            The feedback below should help you to improve your application!
+            It will not influence the score of your final solution, so don't worry!
+          </p>
+          <p>
+            We judge your application in four dimensions: Technology, User requirements, InfoVis and Novelty. You find two tables below.
+          </p>
+          <p>
+            The first table (Table 1) reports the results of the evaluations of your app in all four dimensions.
+            The second table (Table 2) reports a performance score for each dimension as a corresponding percentile rank.
+            A percentile rank for a score indicates the percentage of participants who participated in the hack and received a lower score. The percentile ranks for all these four scores are based on the scores of all participants within your hacking group.
+          </p>
+        </td>
+      </tr>
+  <% else %>
+      <tr>
+        <td colspan="3" style="text-align:center;vertical-align:middle;">Table 1: General Feedback</td>
+        <td colspan="3">
+          <p>
+            Thanks for submitting your app! We really enjoyed evaluating your application. The feedback below should help you improve your application!
+            It will not influence the score of your final solution, so don't worry!
+          </p>
+          <p>
+            We judge your application in four dimensions: Technology, User requirements, InfoVis and Novelty.
+            Please find your results below. The better you score on each of these dimensions, the higher your chances of winning.
+          </p>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+<br/>
+
+<h3> Table 1: General results </h3>
+<table style="font-size: 16px; font-family: Arial, sans-serif; color: #222222;">
+  <thead>
+  <tr>
+    <th colspan="3">Dimension</th>
+    <th colspan="3">Description</th>
+    <th colspan="3"></th>
+    <th colspan="3">Your Results</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td colspan="3" style="text-align:center;vertical-align:middle;">Technology</td>
+    <td colspan="3">
+      <p>
+        We evaluate your app in terms of (1) technical errors and (2) the successful fulfillment of technology requirements.
+      </p>
+      <p>
+        (1) Error rating: We differentiate between three types of errors: Major errors that prevent the application from working properly,
+        moderate errors that impede the application from being fully functional, and minor errors that are rather 'cosmetic'.
+      </p>
+    </td>
+    <td style="text-align:center;vertical-align:middle;"> Error rating (negative)</td>
+    <td colspan="3" style="text-align:center;vertical-align:middle;">
+      <% if total_errors = @project.grades.where(phase: @phase, technical: true).first.try(:total_errors) %>
+          <%= -1 * total_errors %>
+      <% else %>
+          N/A
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+    <td colspan="3">
+      <p>
+        (2) Tech requirements: You are expected to meet all 8 technological requirements specified in the challenge description (www.ironhacks.com/task).
+        All requirements are equally weighted. You can achieve a score from 0 (no requirement fulfilled) to 100 (all requirements fulfilled).
+      </p>
+    </td>
+    <td style="text-align:center;vertical-align:middle;"> Total points for meeting technology requirements (on a scale from 0 to 100) </td>
+    <td colspan="3" style="text-align:center;vertical-align:middle;"><%= @project.grades.where(phase: @phase, technical: true).first.try(:total_technical_score) %></td>
+  </tr>
+  <tr>
+    <td colspan="3" style="text-align:center;vertical-align:middle;">User Requirements</td>
+    <td colspan="3">
+      <p>
+        We evaluate the fulfillment of 5 user requirements specified in the challenge description (www.ironhacks.com/task).
+        You can achieve a score from 0 (no requirement fulfilled) to 100 (all requirements fulfilled).
+        All 5 requirements are equally weighted.
+      </p>
+    </td>
+    <td style="text-align:center;vertical-align:middle;">Total points for met user requirements (on a scale from 0 to 100)</td>
+    <td colspan="3" style="text-align:center;vertical-align:middle;"><%= @project.grades.where(phase: @phase, usability: true).first.try(:total_user_experience_score) %></td>
+  </tr>
+  <tr>
+    <td colspan="3" style="text-align:center;vertical-align:middle;">InfoVis</td>
+    <td colspan="3">
+      <p>
+        Our team of InfoVis experts focuses on three core aspects of information visualization usability:
+        (1) System affordance: Does the application offer recognizable elements and interactions that can be understood by the user? 
+        (2) Cognitive workload: Is the number of alternatives from which the user can choose appropriate? 
+        (3) Functionality: Would a potential user have to memorize a lot of information and make many steps in the app to carry the task?
+        You can achieve a score from 0 to 100. All three dimensions are equally weighted.
+      </p>
+    </td>
+    <td style="text-align:center;vertical-align:middle;">Total points for information visualization (maximum achievable from 0 to 100)</td>
+    <td colspan="3" style="text-align:center;vertical-align:middle;"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:total_info_visualization_score), precision: 2) %></td>
+  </tr>
+  <tr>
+    <td colspan="3" style="text-align:center;vertical-align:middle;">Novelty</td>
+    <td colspan="3">
+      <p>
+        Adding new data sets definitely makes your app stand out from the rest. We evaluate the following: 
+        (1) Are required datasets visualized?
+        (2) How relevant are the additional open datasets? 
+        (3) How well have you implemented the data sets in your app? We evaluate each data set individually and average the score across all datasets that you have used.
+        You can achieve a score from 0 to 100.
+      </p>
+    </td>
+    <td style="text-align:center;vertical-align:middle;">Number of new datasets</td>
+    <td colspan="3" style="text-align:center;vertical-align:middle;"><%= @project.grades.where(phase: @phase, usability: true).first.try(:novelty_fields_count) %></td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+    <td colspan="3">
+    </td>
+    <td style="text-align:center;vertical-align:middle;">Total points for implementation of new data sets</td>
+    <td colspan="3" style="text-align:center;vertical-align:middle;"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:design_relevance_score), precision: 2)  %></td>
+  </tr>
+  </tbody>
+</table>
+
+<% if ['Bogota-Hack-1-2017', 'Bogota-Hack-3-2017'].include? @project.hack.name %>
+    <h3> Table 2: Summary: Your Percentile Scores </h3>
+    <p>
+      Remember, that a percentile rank for a score indicates the percentage of participants who participated in the hack and received a lower score.
+      The percentile ranks for all these four scores are based on the scores of all participants within your hacking group.
+      Please visit www.ironhacks.com/scores to compare your results with those of others, and see how others with a similar
+      percentile score do in all four dimensions.
+    </p>
+    <table style="font-size: 16px; font-family: Arial, sans-serif; color: #222222;" >
+      <thead>
+      <tr>
+        <th colspan="3">Dimension</th>
+        <th colspan="3">Technology</th>
+        <th colspan="3">User Requirements</th>
+        <th colspan="3">InfoVis</th>
+        <th colspan="3">Novelty</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td colspan="3" style="text-align:center;vertical-align:middle;">Percentile Score</td>
+        <td colspan="3" style="text-align:center;vertical-align:middle;"><%= number_with_precision(@project.grades.where(phase: @phase, technical: true).first.try(:percentage_below_technical_score), precision: 2) %></td>
+        <td colspan="3" style="text-align:center;vertical-align:middle;"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:percentage_below_user_experience_score), precision: 2) %></td>
+        <td colspan="3" style="text-align:center;vertical-align:middle;"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:percentage_below_info_visualization_score), precision: 2) %></td>
+        <td colspan="3" style="text-align:center;vertical-align:middle;"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:percentage_below_new_novelty_score), precision: 2) %></td>
+      </tr>
+      </tbody>
+    </table>
+    <br/>
+<% end %>
+
+<% if @project.hack.name == 'Bogota-Hack-0-2017' %>
+    <p>Feeling stuck? Check www.ironhacks.com to get the latest information and submit a question to our experts!</p>
+    <p>Happy Hacking! We’re looking forward to your innovative apps!</p>
+    <p>-Team Gold IronHack </p>
+<% elsif @project.hack.name == 'Bogota-Hack-1-2017' %>
+    <p>Also, please have a look at your fellow participants’ performance. It’s a great way to learn new innovative ideas and gear up for the next round!</p>
+    <p>Feeling stuck? Check www.ironhacks.com  to get the latest information and submit a question to our experts!</p>
+    <p>Happy Hacking! We’re looking forward to your innovative apps!</p>
+    <p>-Team Gold IronHack </p>
+<% elsif @project.hack.name == 'Bogota-Hack-2-2017' %>
+    <p>Also, please have a look at your fellow participants’ applications. It’s a great way to learn new innovative ideas and gear up for the next round!</p>
+    <p>Feeling stuck? Check www.ironhacks.com  to get the latest information and submit a question to our experts!</p>
+    <p>Happy Hacking! We’re looking forward to your innovative apps!</p>
+    <p>-Team Gold IronHack </p>
+<% elsif ['Bogota-Hack-3-2017', 'Purdue-Hack-0-2017'].include? @project.hack.name %>
+    <p>Also, please have a look at your fellow participants' applications. It’s a great way to learn new innovative ideas and gear up for the next round!</p>
+    <p>Feeling stuck? Check www.ironhacks.com  to get the latest information and submit a question to our experts!</p>
+    <p>Happy Hacking! We’re looking forward to your innovative apps!</p>
+    <p>-Team Gold IronHack </p>
+<% end %>
+</body>
+</html>

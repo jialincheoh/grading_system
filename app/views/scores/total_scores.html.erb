@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Total Scores</h1>
+
+<div>
+  <h4> Select a Phase </h4>
+  <%= form_tag('/total_scores', method: :get) do %>
+      <%= select_tag :phase, options_for_select(["1st Phase", "2nd Phase", "3rd Phase", "4th Phase", "5th Phase", "Final Phase", "All Phases"], selected: params[:phase]) %> <br/>
+      <%= select_tag :hack, options_for_select(Hack.pluck(:name), selected: params[:hack]) %> <br/>
+      <%= submit_tag 'Show Total Scores', class: 'btn btn-success' %>
+  <% end %>
+</div>
+
+<table class="table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th colspan="3">Project</th>
+    <th colspan="3">Hack</th>
+    <th colspan="3">Student</th>
+    <th colspan="3">Total Score</th>
+    <th colspan="3">The % of participants whose total score below your score</th>
+    <th colspan="3">Phase</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @projects.each do |project| %>
+    <% @phases.each do |phase| %>
+      <tr>
+        <td colspan="3"><%= link_to project.name, project_path(project) %></td>
+        <td colspan="3"><%= project.hack.name %></td>
+        <td colspan="3"><%= project.student.name %></td>
+        <td colspan="3"><%= number_with_precision(project.calculate_score_for(phase), :precision => 2) %></td>
+        <td colspan="3"><%= number_with_precision(project.percentage_below_total_score(phase, @project_ids), :precision => 2) %></td>
+        <td colspan="3"><%= phase %></td>
+      </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back', root_path, class: 'btn btn-small btn-warning' %>

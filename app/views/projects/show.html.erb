@@ -1,0 +1,46 @@
+<p id="notice"><%= notice %></p>
+
+<table class="table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th colspan="3">Project Name</th>
+    <th colspan="3">Web URL</th>
+    <th colspan="3">Readme URL</th>
+    <th colspan="3">Student</th>
+    <th colspan="3">Technical Grader</th>
+    <th colspan="3">Usability Grader</th>
+    <th colspan="3">Score 1st Phase</th>
+    <th colspan="3">Score 2nd Phase</th>
+    <th colspan="3">Score 3rd Phase</th>
+    <% if @project.bogota_ironhack? %>
+        <th colspan="3">Score 4th Phase</th>
+        <th colspan="3">Score 5th Phase</th>
+    <% else %>
+        <th colspan="3">Score Final Phase</th>
+    <% end %>
+  </tr>
+  </thead>
+
+  <tbody>
+      <tr>
+        <td colspan="3"><%= @project.name %></td>
+        <td colspan="3"><%= @project.web_url %></td>
+        <td colspan="3"><%= @project.read_me_url %></td>
+        <td colspan="3"><%= @project.student.name %></td>
+        <td colspan="3"><%= @project.technical_grader.try(:email) %></td>
+        <td colspan="3"><%= @project.usability_grader.try(:email) %></td>
+        <td colspan="3"><%= number_with_precision(@project.calculate_score_for("1st Phase"), :precision => 2) %></td>
+        <td colspan="3"><%= number_with_precision(@project.calculate_score_for("2nd Phase"), :precision => 2) %></td>
+        <td colspan="3"><%= number_with_precision(@project.calculate_score_for("3rd Phase"), :precision => 2) %></td>
+        <% if @project.bogota_ironhack? %>
+            <td colspan="3"><%= number_with_precision(@project.calculate_score_for("4th Phase"), :precision => 2) %></td>
+            <td colspan="3"><%= number_with_precision(@project.calculate_score_for("5th Phase"), :precision => 2) %></td>
+        <% else %>
+            <td colspan="3"><%= number_with_precision(@project.calculate_score_for("Final Phase"), :precision => 2) %></td>
+        <% end %>
+      </tr>
+  </tbody>
+</table>
+
+<%= link_to 'Back', projects_path, class: 'btn btn-small btn-warning' %>
+<%= link_to 'Start Grading', project_grades_path(@project), class: 'btn btn-small btn-warning' %>

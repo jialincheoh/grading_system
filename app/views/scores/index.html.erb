@@ -1,0 +1,202 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Scores</h1>
+
+<div>
+  <h4> Select a Phase and a Hack </h4>
+  <%= form_tag('/scores', method: :get) do %>
+      <%= select_tag :phase, options_for_select(["1st Phase", "2nd Phase", "3rd Phase", "4th Phase", "5th Phase", "Final Phase", "All Phases"], selected: params[:phase]) %> <br/>
+      <%= select_tag :hack, options_for_select(Hack.pluck(:name), selected: params[:hack]) %> <br/>
+      <%= submit_tag 'Show Scores', class: 'btn btn-success' %>
+  <% end %>
+</div>
+
+<table class="table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th colspan="3">Project</th>
+    <th colspan="3">Hack</th>
+    <th colspan="3">Student</th>
+    <th colspan="3">Grader Name</th>
+    <th colspan="3">Grader Email</th>
+    <th colspan="3">User Requirement</th>
+    <th colspan="3">Info Viz Score</th>
+    <th colspan="3">Novelty Score</th>
+    <th colspan="3">Tech Score</th>
+    <th colspan="3">The % of participants whose Tech score below your score</th>
+    <th colspan="3">The % of participants whose User Requirement score below your score</th>
+    <th colspan="3">The % of participants whose InfoViz score below your score</th>
+    <th colspan="3">The % of participants whose Nolvelty score below your score</th>
+    <th colspan="3">Phase</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @grades.each do |grade| %>
+      <tr>
+        <td colspan="3"><%= link_to grade.project.name, project_path(grade.project) %></td>
+        <td colspan="3"><%= grade.project.hack.name %></td>
+        <td colspan="3"><%= grade.project.student.name %></td>
+        <td colspan="3"><%= grade.grader.try(:name) %></td>
+        <td colspan="3"><%= grade.grader.try(:email) %></td>
+        <% if grade.technical_grade? %>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"><%= number_with_precision(grade.total_technical_score, :precision => 2) %></td>
+            <td colspan="3"><%= number_with_precision(grade.percentage_below_technical_score, :precision => 2) %></td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+        <% end %>
+        <% if grade.usability_grade? %>
+            <td colspan="3"><%= number_with_precision(grade.total_user_experience_score, :precision => 2) %></td>
+            <td colspan="3"><%= number_with_precision(grade.total_info_visualization_score, :precision => 2) %></td>
+            <% if grade.project.bogota_ironhack? || grade.project.purdue_ironhack? %>
+                <td colspan="3"><%= number_with_precision(grade.design_relevance_score, :precision => 2) %></td>
+            <% else %>
+                <td colspan="3"><%= number_with_precision(grade.total_novelty_score, :precision => 2) %></td>
+            <% end %>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"> - - - </td>
+            <td colspan="3"><%= number_with_precision(grade.percentage_below_user_experience_score, :precision => 2) %></td>
+            <td colspan="3"><%= number_with_precision(grade.percentage_below_info_visualization_score, :precision => 2) %></td>
+            <% if grade.project.bogota_ironhack? || grade.project.purdue_ironhack? %>
+                <td colspan="3"><%= number_with_precision(grade.percentage_below_new_novelty_score, :precision => 2) %></td>
+            <% else %>
+                <td colspan="3"><%= number_with_precision(grade.percentage_below_novelty_score, :precision => 2) %></td>
+            <% end %>
+        <% end %>
+        <td colspan="3"><%= grade.phase %></td>
+      </tr>
+  <% end %>
+
+      <tr>
+        <td colspan="3"> Average </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> <%= number_with_precision(@ue_avg, :precision => 2) %> </td>
+        <td colspan="3"> <%= number_with_precision(@iv_avg, :precision => 2) %> </td>
+        <% if (params[:hack] =~ /Purdue-Hack-\d+-2017/).present? || (params[:hack] =~ /Bogota-Hack-\d+-2017/).present? %>
+            <td colspan="3"> <%= number_with_precision(@new_nov_avg, :precision => 2) %> </td>
+        <% else %>
+            <td colspan="3"> <%= number_with_precision(@nov_avg, :precision => 2) %> </td>
+        <% end %>
+        <td colspan="3"> <%= number_with_precision(@tech_avg, :precision => 2) %> </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+      </tr>
+
+      <tr>
+        <td colspan="3"> Standard Deviation </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> <%= number_with_precision(@ue_std_dev, :precision => 2) %> </td>
+        <td colspan="3"> <%= number_with_precision(@iv_std_dev, :precision => 2) %> </td>
+        <% if (params[:hack] =~ /Purdue-Hack-\d+-2017/).present? || (params[:hack] =~ /Bogota-Hack-\d+-2017/).present? %>
+            <td colspan="3"> <%= number_with_precision(@new_nov_std_dev, :precision => 2) %> </td>
+        <% else %>
+            <td colspan="3"> <%= number_with_precision(@nov_std_dev, :precision => 2) %> </td>
+        <% end %>
+        <td colspan="3"> <%= number_with_precision(@tech_std_dev, :precision => 2) %> </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+      </tr>
+
+      <tr>
+        <td colspan="3"> Quartile1 </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> <%= number_with_precision(@ue_q1, :precision => 2) %> </td>
+        <td colspan="3"> <%= number_with_precision(@iv_q1, :precision => 2) %> </td>
+        <% if (params[:hack] =~ /Purdue-Hack-\d+-2017/).present? || (params[:hack] =~ /Bogota-Hack-\d+-2017/).present? %>
+            <td colspan="3"> <%= number_with_precision(@new_nov_q1, :precision => 2) %> </td>
+        <% else %>
+            <td colspan="3"> <%= number_with_precision(@nov_q1, :precision => 2) %> </td>
+        <% end %>
+        <td colspan="3"> <%= number_with_precision(@tech_q1, :precision => 2) %> </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+      </tr>
+
+      <tr>
+        <td colspan="3"> Quartile2 </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> <%= number_with_precision(@ue_q2, :precision => 2) %> </td>
+        <td colspan="3"> <%= number_with_precision(@iv_q2, :precision => 2) %> </td>
+        <% if (params[:hack] =~ /Purdue-Hack-\d+-2017/).present? || (params[:hack] =~ /Bogota-Hack-\d+-2017/).present? %>
+            <td colspan="3"> <%= number_with_precision(@new_nov_q2, :precision => 2) %> </td>
+        <% else %>
+            <td colspan="3"> <%= number_with_precision(@nov_q2, :precision => 2) %> </td>
+        <% end %>
+        <td colspan="3"> <%= number_with_precision(@tech_q2, :precision => 2) %> </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+      </tr>
+
+      <tr>
+        <td colspan="3"> Quartile3 </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> <%= number_with_precision(@ue_q3, :precision => 2) %> </td>
+        <td colspan="3"> <%= number_with_precision(@iv_q3, :precision => 2) %> </td>
+        <% if (params[:hack] =~ /Purdue-Hack-\d+-2017/).present? || (params[:hack] =~ /Bogota-Hack-\d+-2017/).present? %>
+            <td colspan="3"> <%= number_with_precision(@new_nov_q3, :precision => 2) %> </td>
+        <% else %>
+            <td colspan="3"> <%= number_with_precision(@nov_q3, :precision => 2) %> </td>
+        <% end %>
+        <td colspan="3"> <%= number_with_precision(@tech_q3, :precision => 2) %> </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+      </tr>
+
+      <tr>
+        <td colspan="3"> Largest </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> <%= number_with_precision(@ue_max, :precision => 2) %> </td>
+        <td colspan="3"> <%= number_with_precision(@iv_max, :precision => 2) %> </td>
+        <% if (params[:hack] =~ /Purdue-Hack-\d+-2017/).present? || (params[:hack] =~ /Bogota-Hack-\d+-2017/).present? %>
+            <td colspan="3"> <%= number_with_precision(@new_nov_max, :precision => 2) %> </td>
+        <% else %>
+            <td colspan="3"> <%= number_with_precision(@nov_max, :precision => 2) %> </td>
+        <% end %>
+        <td colspan="3"> <%= number_with_precision(@tech_max, :precision => 2) %> </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+        <td colspan="3"> - - - </td>
+      </tr>
+  </tbody>
+</table>
+
+<%= link_to 'Back', root_path, class: 'btn btn-small btn-warning' %>

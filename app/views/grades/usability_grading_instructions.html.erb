@@ -1,0 +1,14 @@
+<% if @project.gold_ironhack? %>
+    <%= render 'gold_iron_hack_ux_instructions' %>
+<% elsif @project.black_ironhack? %>
+    <%= render 'black_iron_hack_ux_instructions' %>
+<% elsif @project.bogota_ironhack? %>
+    <%= render 'bogota_iron_hack_ux_instructions' %>
+<% elsif @project.purdue_ironhack? %>
+    <%= render 'purdue_iron_hack_ux_instructions' %>
+<% elsif @project.platzi_ironhack? %>
+    <%= render 'platzi_iron_hack_ux_instructions' %>
+<% end %>
+
+<%= link_to 'Back', :back, class: 'btn btn-warning' %>
+

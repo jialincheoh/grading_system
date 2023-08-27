@@ -1,0 +1,9 @@
+<h2>Grade This Project</h2>
+
+<%= render 'form' %>
+
+<%= link_to 'Back', project_grades_path(@project), class: 'btn btn-small btn-warning' %>
+
+<% if @project.web_url.present? && current_grader.technical_expert? && (@project.graders.include? current_grader) %>
+    <%= link_to 'Create Novelty Fields for User Experience Grader', project_novelty_fields_path(@project), class: 'btn btn-small btn-warning' %>
+<% end %>

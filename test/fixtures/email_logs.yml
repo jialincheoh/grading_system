@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  hack_id: 1
+  project_id: 1
+  student_id: 1
+  phase: MyString
+  student_email: MyString
+
+two:
+  hack_id: 1
+  project_id: 1
+  student_id: 1
+  phase: MyString
+  student_email: MyString

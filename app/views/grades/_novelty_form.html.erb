@@ -1,0 +1,61 @@
+<%= form_for([@project, @grade], url: {action: "create_novelty_fields"}) do |f| %>
+    <% if @grade.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@grade.errors.count, "error") %> prohibited this grade from being saved:</h2>
+
+          <ul>
+            <% @grade.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.hidden_field :project_id %>
+    </div>
+
+    <% if current_grader.technical_expert? %>
+        <%= f.hidden_field :usability, value: true %>
+        <%= f.hidden_field :grader_id, value: @project.usability_grader.id %>
+
+        <div class="form-group">
+          <%= f.label :novelty_1_text %>
+          <%= f.text_area :novelty_1_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_2_text %>
+          <%= f.text_area :novelty_2_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_3_text %>
+          <%= f.text_area :novelty_3_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_4_text %>
+          <%= f.text_area :novelty_4_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_5_text %>
+          <%= f.text_area :novelty_5_text, class: 'form-control' %>
+        </div>
+    <% end %>
+
+    <% if params[:action] == 'new_novelty_fields' %>
+        <div class="field">
+          <%= f.label :phase %><br>
+          <% if @project.bogota_ironhack? %>
+              <%= f.select :phase, ["1st Phase", "2nd Phase", "3rd Phase", "4th Phase", "5th Phase"], class: 'form-control' %>
+          <% else %>
+              <%= f.select :phase, ["1st Phase", "2nd Phase", "3rd Phase", "Final Phase"], class: 'form-control' %>
+          <% end %>
+        </div>
+    <% end %>
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">
+        Create Novelty Fields
+      </button>
+    </div>
+
+<% end %>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+      table, td, th {
+          border: 1px solid black;
+      }
+
+      table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+
+      td {
+          height: 50px;
+          vertical-align: bottom;
+      }
+  </style>
+</head>
+
+<body>
+<h3> Feedback Table </h3>
+<% if @project.hack.name == 'Gold IronHack' %>
+    <p>
+      Please go to <%= link_to "www.goldironhack.com", "http://www.goldironhack.com", target: '_blank', style: "color:#ff0000;text-decoration: underline;" %>
+      to compare your scores with others.
+    </p>
+<% end %>
+<table style="font-size: 16px; font-family: Arial, sans-serif; color: #222222;" >
+  <thead>
+  <tr>
+    <th colspan="3">Github Name</th>
+    <th colspan="3"><%= @student.github %></th>
+  </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td colspan="3">General Feedback</td>
+        <td colspan="3">
+          <p>Thanks for submitting your app! We really enjoyed evaluating you application. The feedback below should help you to improve your application! It will not influence the score of your final solution, so don't worry!</p>
+          <p>Each performance score is reported with a corresponding percentile rank. A percentile rank for a score indicates the percentage of participants who participated in the hack and received a lower score. Regardless of when the reported scores were earned, the percentile ranks for all these four scores are based on the scores of all participants within the hack.</p>
+        </td>
+      </tr>
+  </tbody>
+</table>
+<br/>
+<table style="font-size: 16px; font-family: Arial, sans-serif; color: #222222;">
+  <thead>
+  <tr>
+    <th colspan="3">Dimension</th>
+    <th colspan="3">Description</th>
+    <th colspan="3">Your Performance</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td colspan="3">Technology</td>
+    <td colspan="3">
+      <p>The primary measure for technology performance used in this feedback is the technological requirements and errors. You are expected to meet all the technological requirements specified on the website. And we differentiate three types of errors: Major errors that prevent the application from working properly, moderate errors that impede the application from being fully functional, and minor errors that are rather 'cosmetic'.</p>
+    </td>
+    <td colspan="3"><%= number_with_precision(@project.grades.where(phase: @phase, technical: true).first.try(:percentage_below_technical_score), :precision => 2) %>%</td>
+  </tr>
+  <tr>
+    <td colspan="3">User requirements</td>
+    <td colspan="3">
+      <p>The primary measure for this performance dimension relates to the fulfillment of user requirements specified in the hacking task e.g. was the app developed for citizens living in Lafayette (Please review the task requirements)</p>
+    </td>
+    <td colspan="3"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:percentage_below_user_experience_score), :precision => 2) %>%</td>
+  </tr>
+  <tr>
+    <td colspan="3">Information Visualization</td>
+    <td colspan="3">
+      <p>In the dimension of information visualization we focus on three core aspects of usability: System affordance: Does the application offer recognizable elements and interactions that can be understood by the user? Cognitive workload: Is the number of alternatives from which the user can choose appropriate? Would a potential user have to memorize a lot of information to carry the task?</p>
+    </td>
+    <td colspan="3"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:percentage_below_info_visualization_score), :precision => 2) %>%</td>
+  </tr>
+  <tr>
+    <td colspan="3">Novelty</td>
+    <td colspan="3">
+      <p>Novelty is evaluated with respect to two dimensions: Does your application include features that go beyond standard features of google maps? Does the application include more than just the mandatory dataset?</p>
+    </td>
+    <td colspan="3"><%= number_with_precision(@project.grades.where(phase: @phase, usability: true).first.try(:percentage_below_novelty_score), :precision => 2) %>%</td>
+  </tr>
+  <tr>
+    <td colspan="3">Total score</td>
+    <td colspan="3">
+      <p>The percentage of participants who scored below you overall.</p>
+    </td>
+    <td colspan="3"><%= number_with_precision(@project.percentage_below_total_score(@phase, @project_ids), :precision => 2) %>%</td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

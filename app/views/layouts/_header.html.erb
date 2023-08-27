@@ -1,0 +1,19 @@
+<div id="header-container" class="row">
+  <div class="row">
+    <div class="col-xs-1">&nbsp;</div>
+    <div class="col-xs-6 white-text title">
+      <h2> Home </h2>
+      <%= link_to "Purdue IronHack Grading System", root_url, class: 'black' %>
+    </div>
+    <div class="col-xs-1">&nbsp;</div>
+    <% if current_grader %>
+        <div class="col-xs-4"><span class='white-text'>Hello, <em><%= current_grader.name %></em>!</span>&nbsp;&nbsp;
+          <%= link_to "Sign out", destroy_grader_session_path, method: :delete, class: 'black' %>
+        </div>
+    <% else %>
+        <div class="col-xs-4"><%= link_to "Sign up", new_grader_registration_path, class: 'black' %>
+          <span class='white-text'>&nbsp;or&nbsp;</span><%= link_to "Sign in", new_grader_session_path, class: 'black' %>
+        </div>
+    <% end %>
+  </div>
+</div>

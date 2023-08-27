@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Purdue IronHack Grading System</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+
+<body>
+<div id="header-container" class="row">
+  <div class="row">
+    <div class="col-xs-1">&nbsp;</div>
+    <div class="col-xs-6 white-text title">
+      Purdue IronHack Grading System |
+      <%= link_to 'Home', root_url, { style: 'color:#FFFFFF;' } %>
+    </div>
+    <div class="col-xs-1">&nbsp;</div>
+    <% if current_grader %>
+        <div class="col-xs-4"><span class='white-text'>Hello, <em><%= current_grader.email %></em>!</span>&nbsp;&nbsp;
+          <%= link_to "Sign out", destroy_grader_session_path, method: :delete, class: 'black' %>
+        </div>
+    <% else %>
+        <div class="col-xs-4">
+          <%= link_to "Sign up", new_grader_registration_path, class: 'black' %>
+          <span class='white-text'>&nbsp;or&nbsp;</span>
+          <%= link_to "Sign in", new_grader_session_path, class: 'black' %>
+        </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="container">
+  <div id="main-container" class="container-fluid">
+
+    <div id="alert-container" class="row">
+      <% flash.each do |name, msg| %>
+          <% next if (msg.downcase.include? 'signed up') || (msg.downcase.include? 'signed in') %>
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <%= content_tag :div, msg, :id => "flash_#{name}" %>
+          </div>
+      <% end %>
+    </div>
+    <div id="content-container" class="row">
+      <%= yield %>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+

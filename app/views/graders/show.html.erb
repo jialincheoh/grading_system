@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<table class="table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th colspan="3">Name</th>
+    <th colspan="3">Email</th>
+    <th colspan="3">Grader Type</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr>
+    <td colspan="3"><%= @grader.name %></td>
+    <td colspan="3"><%= @grader.email %></td>
+    <td colspan="3"><%= @grader.grader_type %></td>
+  </tr>
+  </tbody>
+</table>
+
+<% if current_grader == @grader %>
+    <%= link_to 'Edit', edit_grader_path(@grader), class: 'btn btn-small btn-warning' %>
+<% end %>
+<%= link_to 'Back', graders_path, class: 'btn btn-small btn-warning' %>

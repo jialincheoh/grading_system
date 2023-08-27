@@ -1,0 +1,31 @@
+<%= form_for(@grader) do |f| %>
+  <% if @grader.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@grader.errors.count, "error") %> prohibited this grader from being saved:</h2>
+
+      <ul>
+      <% @grader.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name, style: "height:30px; width:600px;" %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br>
+    <%= f.text_field :email, style: "height:30px; width:600px;" %>
+  </div>
+  <div class="field">
+    <%= f.label :grader_type %><br>
+    <%= f.select :grader_type, ["Technical Expert", "User Interface Expert"] %>
+  </div>
+  <div class="actions">
+    <button type="submit" class="btn btn-primary">
+      Create/Update Grader
+    </button>
+  </div>
+<% end %>

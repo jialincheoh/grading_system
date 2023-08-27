@@ -1,0 +1,46 @@
+<h2>Editing Novelty Fields</h2>
+
+<%= form_for([@project, @grade], url: {action: "update_novelty_fields"}) do |f| %>
+    <% if @grade.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@grade.errors.count, "error") %> prohibited this grade from being saved:</h2>
+
+          <ul>
+            <% @grade.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <% if current_grader.technical_expert? %>
+
+        <div class="form-group">
+          <%= f.label :novelty_1_text %>
+          <%= f.text_area :novelty_1_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_2_text %>
+          <%= f.text_area :novelty_2_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_3_text %>
+          <%= f.text_area :novelty_3_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_4_text %>
+          <%= f.text_area :novelty_4_text, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :novelty_5_text %>
+          <%= f.text_area :novelty_5_text, class: 'form-control' %>
+        </div>
+    <% end %>
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">
+        Update Novelty Fields
+      </button>
+    </div>
+<% end %>
+

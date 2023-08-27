@@ -1,0 +1,33 @@
+<html>
+<head>
+  <meta content = 'text/html; charset = UTF-8' http-equiv = 'Content-Type' />
+</head>
+<body>
+    <h3>Purdue IronHack Grading Reminder</h3>
+    <p>
+      You are assigned to grade the following project:
+      <%= link_to "#{@project_web_url}", "http://#{@project_web_url}", target: '_blank', style: "color:#ff0000;text-decoration: underline;" %>
+
+      <p>
+        The deadline is approaching soon.<br/>
+        We appreciate your time in grading the projects as soon as possible.<br/>
+        Thank you!
+      </p>
+
+    <% if @grader.technical_expert? %>
+        <p>
+          Please visit the following link to grade the project:
+          <%= link_to "#{@project_url}", "#{@project_url}", target: '_blank', style: "color:#ff0000;text-decoration: underline;" %>
+        </p>
+        <p>
+          Project Readme URL:
+          <%= link_to "#{@project_read_me_url}", "http://#{@project_read_me_url}", target: '_blank', style: "color:#ff0000;text-decoration: underline;" %>
+        </p>
+    <% elsif @grader.user_interface_expert? %>
+        <p>
+          Please visit the following link to grade the project:
+          <%= link_to "#{@grade_edit_url}", "#{@grade_edit_url}", target: '_blank', style: "color:#ff0000;text-decoration: underline;" %>
+        </p>
+    <% end %>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<h4>Errors</h4>
+<p>The primary measure for technology performance used in this feedback is the technological errors. We differentiate three types of errors: Major errors that prevent the application to work properly, moderate errors that impede the application to be fully functional, and minor errors are rather 'cosmetic'.</p>
+<br>
+<div class="field" class="form-group">
+  <%= f.label :major_errors %>
+  <%= f.select :major_errors, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %>
+</div>
+<div class="field" class="form-group">
+  <%= f.label :moderate_errors %>
+  <%= f.select :moderate_errors, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %>
+</div>
+<div class="field">
+  <%= f.label :minor_errors %>
+  <%= f.select :minor_errors, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %>
+</div>

@@ -1,0 +1,139 @@
+xls file with all project's data
+
+project name | studnet name | hack type | phase | all from tech judge sheet | all from UX judge sheet |
+
+json: 
+
+{ 
+	project_name: '...',
+	student_name: '...',
+
+}
+
+
+Hack:
+	name
+	has_many :projects
+
+Project:
+	name, web_url, read_me_url
+	belongs_to :student
+	belongs_to
+	has_many :grades
+	has_many :graders, through: :grades	
+
+Grade:
+	belongs_to :project
+	belongs_to :grader
+
+	// usability_score: (0-10)
+	// technical_score: (0-10)
+	phase
+
+Grader:
+	name, email, grader_type (e.g. technical, usability expert etc.)
+	has_many :grades
+	has_many :projects, through: :grades
+
+Student:
+	has_one :project
+
+	name:string
+	github:string
+	email:string
+
+### Next features/bugs:
+
+* Performance optimization for scores pages
+* Add RSpec / Testing / TDD
+
+* Home Page (Project's index page) should indicate which projects are already graded.
+
+* Admin should be able to change/re-assign graders to a project [Low priority]
+
+* Add proper authentication/authorization for creating/updating resources, so that
+non-admin people can't change/destroy anything [pundit]
+
+* Customize/Update Admin pages for all the resources
+
+### Completed Features:
+
+* Deploy application to heroku [Done]
+* Customize sign up page for graders so that grader type and name can be taken as input [Done]
+* Login system (Devise) [Done for Graders]
+	- Grader model
+	- Decide how to connect existing students and graders to the User
+	- Multiple models?
+	- [https://gorails.com/forum/single-devise-user-model-or-multiple-devise-models]
+	- [http://stackoverflow.com/questions/9472852/devise-and-multiple-user-models]
+	- First, make the Grader a devise model and see how it goes.
+		- make the signup/login/logout work for graders
+* Add Devise to Grader and make the signup/signin/signout flow for Grader [Done]
+* Send email when signup/login [Done]
+* setup email/mailer to send email using gmail. See this:
+http://stackoverflow.com/questions/1789032/send-email-from-localhost [Done]
+* Add reset password functionality [http://railscasts.com/episodes/209-introducing-devise?view=asciicast] [Done]
+* When a project is created, it should be assigned to one technical grader 
+and another UI grader randomly. [Done]
+* Send email when a project is assigned to a grader [Done]
+* Add :readme to Project [Done]
+* Admin interface (Add ActiveAdmin to Grader) [https://github.com/activeadmin/activeadmin/blob/master/docs/0-installation.md] [Done]
+	- Admins will be able to create/destroy/update everything.
+	- Create students and projects
+
+* Limited access to students and graders (Proper Authorizations) [Done]
+
+* When graders sign in and redirected to the projects page, they should see the projects
+  assigned to them, but NOT all the projects. [Done]
+* Don't allow the grader to update the phase
+	[https://automatic-grading-system.herokuapp.com/projects/4/grades/3/edit] [Done]
+* Allow graders to create a new grade for each phase. [Done]
+* Add simple designs [Twitter bootstrap] (partially done)
+* Update a grade for a particular phase [Done]
+* Show grading sheet for technical/usability/total scores [Done]
+* update project#calculate_score_for(phase) to calculate scores correctly [Done]
+	- add boolean coulmns to grades: technical_grade, non-tech-grade 
+* Change grader email sending flow
+	- email technical grader right away whem the project is assigned
+	- email the usability grader right away when the technical grader creates the novelty fields
+* Update the email to grader part (email to technical grader when the project is assigned, email to usability grader when the technical grader is done!) [Done]	
+* Find why same grades are created multiple times [Done]
+* Remove submit grade link for usability grader [Done]
+* Apply specific formula to calculate total scores
+	- only 1 thing is remaiing: total of percentages [Done]
+* Add a phase dropdown and show Score page/sheet for a particular phase [Done]
+* Send email to the student when ALL the grades are available at a specific time of the day.
+	- Table to the students (in the email) that list the scores [Done]
+* Make domain selection dynamic in mailer (it shoud work with both development and production env) [Done]
+* http://localhost:3000/projects/11/grades
+loggedin as rakib1987, but still can see the grades for rakib312's project and see the 'submit new grade' url. needs to be fixed [Done]
+* Implement 2nd hack functionalty [Done]
+
+* Update the project districutions among the graders
+
+	UX Graders = 4
+	Technical Graders = 2
+
+	Hack 1 Projects = 24
+		- Each Technical Graders Max = 12
+		- Each UX Graders Max = 6
+	Hack 2 Projects = 16
+		- Each Technical Graders Max = 8
+		- Each UX Graders Max = 4 [Done]
+
+* Make scores pages available for admins only [Done]
+
+* Send Email Reminder to the GRADERS before submission. [1 week, 3 days. 24 hours . . .]
+	- technical graders [Done]
+	- UX graders [Done]
+* Send Email Reminder to the STUDENTS before submission. [1 week, 3 days. 24 hours . . .] [Done]
+* Add some validation for all the models e.g. grades, students, projects [Done]
+	- if a grade is present for a particular phases, we shoudn't creat a new one. Rather, show a message to the
+	grader that you have already graded the project for that pahse. Wanna update? [Done]
+
+* Automatic Deployment [Almost Done] [Have to do for the remaining projects] [Done]
+
+* Add a before_action and check if the grader is a grader of this project, if not, restrict him to view the grades of another grader's project. [Done]
+* Add hack name to project pages [Done]
+* Graders should not be able to assign/edit their grader type. Grader type will only
+be assigned by the admin. [Not necessary right now]
